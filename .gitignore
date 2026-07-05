@@ -1,0 +1,131 @@
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Compiled Extensions
+*.so
+
+# Distribution / Packaging
+build/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# =========================
+# Virtual Environments
+# =========================
+venv/
+env/
+ENV/
+.venv/
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.*
+
+# =========================
+# IDEs
+# =========================
+.vscode/
+.idea/
+*.iml
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# Pytest
+# =========================
+.pytest_cache/
+.coverage
+htmlcov/
+
+# =========================
+# Mypy
+# =========================
+.mypy_cache/
+
+# =========================
+# Ruff
+# =========================
+.ruff_cache/
+
+# =========================
+# Pyre
+# =========================
+.pyre/
+
+# =========================
+# Type Checker
+# =========================
+.pytype/
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# Temporary Files
+# =========================
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# =========================
+# Cache
+# =========================
+.cache/
+.cache-loader/
+
+# =========================
+# Machine Learning Models (Optional)
+# Uncomment if models can be regenerated
+# =========================
+# *.pkl
+# *.joblib
+# *.h5
+# *.pt
+# *.pth
+# *.onnx
+
+# =========================
+# Node.js (if frontend exists)
+# =========================
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# =========================
+# SQLite (Optional)
+# Uncomment if database should not be tracked
+# =========================
+# *.db
+# *.sqlite3
