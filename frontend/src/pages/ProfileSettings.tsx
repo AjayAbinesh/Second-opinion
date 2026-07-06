@@ -9,14 +9,14 @@ interface ProfileSettingsProps {
 }
 
 export default function ProfileSettings({ token, theme, toggleTheme, user }: ProfileSettingsProps) {
-  const [settings, setSettings] = useState<any>(null);
+  const [, setSettings] = useState<any>(null);
   const [grokKey, setGrokKey] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const baseUrl = 'http://localhost:8000';
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -27,7 +27,7 @@ export default function ProfileSettings({ token, theme, toggleTheme, user }: Pro
         const data = await response.json();
         if (response.ok) {
           setSettings(data);
-          setGrokKey(data.grok_api_key || '');
+          setGrokKey(data.groq_api_key || '');
         }
       } catch (err) {
         setError('Failed to fetch user settings');
@@ -52,7 +52,7 @@ export default function ProfileSettings({ token, theme, toggleTheme, user }: Pro
           Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
-          grok_api_key: grokKey || null,
+          groq_api_key: grokKey || null,
           theme: theme
         })
       });
@@ -144,7 +144,7 @@ export default function ProfileSettings({ token, theme, toggleTheme, user }: Pro
         <div className="p-6 rounded-2xl glass-panel border border-slate-700/50 space-y-4">
           <h3 className="text-xs uppercase font-extrabold tracking-widest text-indigo-400 flex items-center">
             <Key className="h-4 w-4 mr-1.5" />
-            <span>xAI Grok Integration credentials</span>
+            <span>Groq API Integration credentials</span>
           </h3>
           <div className="space-y-3">
             <p className="text-xs text-slate-500 leading-relaxed">

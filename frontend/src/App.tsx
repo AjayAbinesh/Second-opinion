@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import LandingPage from './pages/LandingPage';
 import Auth from './pages/Auth';
@@ -18,7 +18,7 @@ export default function App() {
   const [selectedSessionId, setSelectedSessionId] = useState<number | null>(null);
   const [theme, setTheme] = useState<string>(localStorage.getItem('theme') || 'dark');
 
-  const baseUrl = 'http://localhost:8000';
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
   // Synchronize token state with localstorage
   const handleSetToken = (newToken: string) => {

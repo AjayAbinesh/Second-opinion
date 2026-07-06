@@ -20,7 +20,7 @@ export default function Auth({ setToken, setUser, setCurrentTab }: AuthProps) {
     setError('');
     setLoading(true);
 
-    const baseUrl = 'http://localhost:8000';
+    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
     try {
       if (isLogin) {

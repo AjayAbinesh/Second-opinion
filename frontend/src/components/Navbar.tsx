@@ -1,4 +1,3 @@
-import React from 'react';
 import { Shield, Zap, Sun, Moon, LogOut, Settings, Award } from 'lucide-react';
 
 interface NavbarProps {

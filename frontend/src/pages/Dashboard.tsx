@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Award, Zap, Activity, Clock, Play, CheckCircle, ArrowRight, Shield } from 'lucide-react';
 
 interface DashboardProps {
@@ -12,9 +12,9 @@ export default function Dashboard({ token, setCurrentTab, setSelectedSessionId }
   const [activeSessions, setActiveSessions] = useState<any[]>([]);
   const [templates, setTemplates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [, setError] = useState('');
 
-  const baseUrl = 'http://localhost:8000';
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
   const fetchData = async () => {
     try {

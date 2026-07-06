@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: second-opinion-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn backend.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: second-opinion-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+
+  - type: web
+    name: second-opinion-frontend
+    runtime: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: second-opinion-backend
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+
+databases:
+  - name: second-opinion-db
+    databaseName: second_opinion
+    plan: free

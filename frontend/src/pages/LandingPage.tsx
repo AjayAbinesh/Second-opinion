@@ -1,5 +1,4 @@
-import React from 'react';
-import { Shield, Brain, Sparkles, AlertTriangle, ChevronRight, Activity, HelpCircle, TrendingUp } from 'lucide-react';
+import { Brain, Sparkles, AlertTriangle, ChevronRight, Activity, HelpCircle, TrendingUp } from 'lucide-react';
 
 interface LandingPageProps {
   setCurrentTab: (tab: string) => void;

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Award, Zap, Trophy, ShieldAlert, Star } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Zap, Trophy, ShieldAlert, Star } from 'lucide-react';
 
 interface LeaderboardProps {
   token: string;
@@ -10,7 +10,7 @@ export default function Leaderboard({ token }: LeaderboardProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const baseUrl = 'http://localhost:8000';
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -74,16 +74,16 @@ export default function Leaderboard({ token }: LeaderboardProps) {
           {entries.length > 0 ? (
             entries.map((entry, index) => {
               const rank = index + 1;
-              let rankStyle = 'text-slate-400';
+              
               let badgeColor = 'bg-slate-800/45';
               if (rank === 1) {
-                rankStyle = 'text-yellow-500 font-bold';
+                
                 badgeColor = 'bg-yellow-500/10 border-yellow-500/20 text-yellow-500';
               } else if (rank === 2) {
-                rankStyle = 'text-slate-300 font-bold';
+                
                 badgeColor = 'bg-slate-300/10 border-slate-300/20 text-slate-300';
               } else if (rank === 3) {
-                rankStyle = 'text-amber-600 font-bold';
+                
                 badgeColor = 'bg-amber-600/10 border-amber-600/20 text-amber-600';
               }
 

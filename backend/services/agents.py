@@ -3,6 +3,7 @@ import os
 import random
 from typing import List, Dict, Any, Optional
 from openai import OpenAI
+from backend.core.config import settings
 from backend.services.vector_store import VectorStore
 
 # Mock medical scenarios for zero-dependency high-fidelity simulations
@@ -190,12 +191,12 @@ class AgentService:
     @staticmethod
     def get_client(custom_key: Optional[str] = None) -> Optional[OpenAI]:
         """Create and return an OpenAI client configured for xAI Grok if key is available."""
-        api_key = custom_key or os.getenv("GROK_API_KEY")
-        if not api_key:
+        api_key = custom_key or settings.GROQ_API_KEY
+        if not api_key or api_key == "gsk_your_actual_groq_api_key":
             return None
         return OpenAI(
             api_key=api_key,
-            base_url=os.getenv("GROK_API_URL", "https://api.x.ai/v1")
+            base_url=settings.GROQ_API_URL
         )
 
     @classmethod
@@ -242,7 +243,7 @@ class AgentService:
         
         try:
             response = client.chat.completions.create(
-                model=os.getenv("GROK_MODEL", "grok-beta"),
+                model=settings.GROQ_MODEL,
                 messages=[
                     {"role": "system", "content": "You are a senior clinical instructor. You output strict JSON only."},
                     {"role": "user", "content": prompt}
@@ -298,7 +299,7 @@ class AgentService:
             
         try:
             response = client.chat.completions.create(
-                model=os.getenv("GROK_MODEL", "grok-beta"),
+                model=settings.GROQ_MODEL,
                 messages=messages,
                 temperature=0.8
             )
@@ -375,7 +376,7 @@ class AgentService:
         
         try:
             response = client.chat.completions.create(
-                model=os.getenv("GROK_MODEL", "grok-beta"),
+                model=settings.GROQ_MODEL,
                 messages=[
                     {"role": "system", "content": "You are an expert medical evaluator. You return strict JSON objects only."},
                     {"role": "user", "content": prompt}

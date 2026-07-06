@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Activity, ShieldAlert, Heart, RefreshCw, Send, Search, CheckCircle, AlertTriangle, FileText, ChevronRight, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Activity, ShieldAlert, Heart, Send, Search, AlertTriangle, FileText, ChevronRight, AlertCircle, ArrowLeft } from 'lucide-react';
 
 interface ClinicalCaseWorkspaceProps {
   token: string;
@@ -27,7 +27,7 @@ export default function ClinicalCaseWorkspace({
   const [error, setError] = useState('');
 
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const baseUrl = 'http://localhost:8000';
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
   const fetchSession = async () => {
     if (!sessionId) return;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Book, HelpCircle, ChevronRight, Activity } from 'lucide-react';
+import { Search, Book, HelpCircle, ChevronRight } from 'lucide-react';
 
 interface KnowledgeBaseProps {
   token: string;
@@ -10,9 +10,9 @@ export default function KnowledgeBase({ token }: KnowledgeBaseProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGuideline, setSelectedGuideline] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [, setError] = useState('');
 
-  const baseUrl = 'http://localhost:8000';
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
   const fetchGuidelines = async () => {
     try {

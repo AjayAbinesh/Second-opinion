@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ShieldAlert, Users, Award, AlertTriangle, Activity, CheckCircle2 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -10,7 +10,7 @@ export default function AdminDashboard({ token }: AdminDashboardProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const baseUrl = 'http://localhost:8000';
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
   useEffect(() => {
     const fetchAdminStats = async () => {
