@@ -204,8 +204,6 @@ def start_case(session_in: schemas.CaseSessionCreate, current_user: models.User 
     except HTTPException:
         raise
     except Exception as e:
-        import traceback
-        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Server error starting case: {str(e)}")
 
 @router.get("/session/{session_id}", response_model=schemas.CaseSessionDetail)
