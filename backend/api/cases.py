@@ -165,41 +165,48 @@ def list_active_sessions(current_user: models.User = Depends(get_current_user), 
 @router.post("/start", response_model=schemas.CaseSessionDetail)
 def start_case(session_in: schemas.CaseSessionCreate, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
     """Initialize a new case session, querying ChromaDB/VectorStore and prompting the Generator Agent."""
-    case = db.query(models.ClinicalCase).filter(models.ClinicalCase.id == session_in.case_id).first()
-    if not case:
-        raise HTTPException(status_code=404, detail="Case template not found")
+    try:
+        case = db.query(models.ClinicalCase).filter(models.ClinicalCase.id == session_in.case_id).first()
+        if not case:
+            raise HTTPException(status_code=404, detail="Case template not found")
+            
+        # Get student custom key if set
+        user_settings = db.query(models.UserSetting).filter(models.UserSetting.user_id == current_user.id).first()
+        custom_key = user_settings.groq_api_key if user_settings else None
         
-    # Get student custom key if set
-    user_settings = db.query(models.UserSetting).filter(models.UserSetting.user_id == current_user.id).first()
-    custom_key = user_settings.groq_api_key if user_settings else None
-    
-    # Run Case Generator Agent
-    case_details = AgentService.generate_case(case.specialty, custom_key=custom_key)
-    
-    # Save the session
-    new_session = models.CaseSession(
-        user_id=current_user.id,
-        case_id=case.id,
-        status="active",
-        current_stage="investigation",
-        generated_case_data=json.dumps(case_details),
-        history=json.dumps([])
-    )
-    db.add(new_session)
-    
-    # Increment user streak if last active was yesterday (simple calculation)
-    today = datetime.datetime.utcnow().date()
-    yesterday = today - datetime.timedelta(days=1)
-    if current_user.last_active and current_user.last_active.date() == yesterday:
-        current_user.streak += 1
-    elif current_user.last_active and current_user.last_active.date() != today:
-        current_user.streak = 1
+        # Run Case Generator Agent
+        case_details = AgentService.generate_case(case.specialty, custom_key=custom_key)
         
-    current_user.last_active = datetime.datetime.utcnow()
-    db.commit()
-    db.refresh(new_session)
-    
-    return serialize_session(new_session)
+        # Save the session
+        new_session = models.CaseSession(
+            user_id=current_user.id,
+            case_id=case.id,
+            status="active",
+            current_stage="investigation",
+            generated_case_data=json.dumps(case_details),
+            history=json.dumps([])
+        )
+        db.add(new_session)
+        
+        # Increment user streak if last active was yesterday (simple calculation)
+        today = datetime.datetime.utcnow().date()
+        yesterday = today - datetime.timedelta(days=1)
+        if current_user.last_active and current_user.last_active.date() == yesterday:
+            current_user.streak += 1
+        elif current_user.last_active and current_user.last_active.date() != today:
+            current_user.streak = 1
+            
+        current_user.last_active = datetime.datetime.utcnow()
+        db.commit()
+        db.refresh(new_session)
+        
+        return serialize_session(new_session)
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Server error starting case: {str(e)}")
 
 @router.get("/session/{session_id}", response_model=schemas.CaseSessionDetail)
 def get_session_detail(session_id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
