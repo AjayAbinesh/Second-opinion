@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Shield, Lock, Mail, User, AlertCircle, ArrowRight } from 'lucide-react';
+import { fetchWithTimeout } from '../utils/api';
 
 interface AuthProps {
   setToken: (token: string) => void;
@@ -29,7 +30,7 @@ export default function Auth({ setToken, setUser, setCurrentTab }: AuthProps) {
         formData.append('username', username);
         formData.append('password', password);
 
-        const response = await fetch(`${baseUrl}/api/auth/login`, {
+        const response = await fetchWithTimeout(`${baseUrl}/api/auth/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -46,7 +47,7 @@ export default function Auth({ setToken, setUser, setCurrentTab }: AuthProps) {
         setUser(data.user);
         setCurrentTab('dashboard');
       } else {
-        const response = await fetch(`${baseUrl}/api/auth/register`, {
+        const response = await fetchWithTimeout(`${baseUrl}/api/auth/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

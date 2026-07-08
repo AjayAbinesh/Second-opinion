@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Search, Book, HelpCircle, ChevronRight } from 'lucide-react';
+import { fetchWithTimeout } from '../utils/api';
 
 interface KnowledgeBaseProps {
   token: string;
@@ -17,7 +18,7 @@ export default function KnowledgeBase({ token }: KnowledgeBaseProps) {
   const fetchGuidelines = async () => {
     try {
       const headers = { Authorization: `Bearer ${token}` };
-      const res = await fetch(`${baseUrl}/api/cases/knowledge-base/guidelines`, { headers });
+      const res = await fetchWithTimeout(`${baseUrl}/api/cases/knowledge-base/guidelines`, { headers });
       const data = await res.json();
       if (res.ok) {
         setGuidelines(data);
@@ -39,7 +40,7 @@ export default function KnowledgeBase({ token }: KnowledgeBaseProps) {
     setLoading(true);
     try {
       const headers = { Authorization: `Bearer ${token}` };
-      const res = await fetch(`${baseUrl}/api/cases/knowledge-base/search?query=${encodeURIComponent(searchQuery)}`, { headers });
+      const res = await fetchWithTimeout(`${baseUrl}/api/cases/knowledge-base/search?query=${encodeURIComponent(searchQuery)}`, { headers });
       const data = await res.json();
       if (res.ok) {
         setGuidelines(data);

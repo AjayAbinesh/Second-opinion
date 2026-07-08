@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Activity, ShieldAlert, Heart, Send, Search, AlertTriangle, FileText, ChevronRight, AlertCircle, ArrowLeft } from 'lucide-react';
+import { fetchWithTimeout } from '../utils/api';
 
 interface ClinicalCaseWorkspaceProps {
   token: string;
@@ -32,7 +33,7 @@ export default function ClinicalCaseWorkspace({
   const fetchSession = async () => {
     if (!sessionId) return;
     try {
-      const response = await fetch(`${baseUrl}/api/cases/session/${sessionId}`, {
+      const response = await fetchWithTimeout(`${baseUrl}/api/cases/session/${sessionId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
@@ -62,7 +63,7 @@ export default function ClinicalCaseWorkspace({
     setError('');
 
     try {
-      const response = await fetch(`${baseUrl}/api/cases/session/${sessionId}/investigate`, {
+      const response = await fetchWithTimeout(`${baseUrl}/api/cases/session/${sessionId}/investigate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -89,7 +90,7 @@ export default function ClinicalCaseWorkspace({
     setError('');
 
     try {
-      const response = await fetch(`${baseUrl}/api/cases/session/${sessionId}/diagnose`, {
+      const response = await fetchWithTimeout(`${baseUrl}/api/cases/session/${sessionId}/diagnose`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,7 +118,7 @@ export default function ClinicalCaseWorkspace({
     setDebateMessage('');
 
     try {
-      const response = await fetch(`${baseUrl}/api/cases/session/${sessionId}/debate`, {
+      const response = await fetchWithTimeout(`${baseUrl}/api/cases/session/${sessionId}/debate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

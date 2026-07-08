@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Shield, Key, Moon, Sun, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
+import { fetchWithTimeout } from '../utils/api';
 
 interface ProfileSettingsProps {
   token: string;
@@ -21,7 +22,7 @@ export default function ProfileSettings({ token, theme, toggleTheme, user }: Pro
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await fetch(`${baseUrl}/api/auth/settings`, {
+        const response = await fetchWithTimeout(`${baseUrl}/api/auth/settings`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await response.json();
@@ -45,7 +46,7 @@ export default function ProfileSettings({ token, theme, toggleTheme, user }: Pro
     setMessage('');
 
     try {
-      const response = await fetch(`${baseUrl}/api/auth/settings`, {
+      const response = await fetchWithTimeout(`${baseUrl}/api/auth/settings`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Zap, Trophy, ShieldAlert, Star } from 'lucide-react';
+import { fetchWithTimeout } from '../utils/api';
 
 interface LeaderboardProps {
   token: string;
@@ -15,7 +16,7 @@ export default function Leaderboard({ token }: LeaderboardProps) {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const response = await fetch(`${baseUrl}/api/analytics/leaderboard`, {
+        const response = await fetchWithTimeout(`${baseUrl}/api/analytics/leaderboard`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await response.json();

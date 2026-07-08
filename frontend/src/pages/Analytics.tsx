@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { TrendingUp, AlertTriangle, BookOpen, CheckCircle, Zap } from 'lucide-react';
+import { fetchWithTimeout } from '../utils/api';
 
 interface AnalyticsProps {
   token: string;
@@ -15,7 +16,7 @@ export default function Analytics({ token }: AnalyticsProps) {
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const response = await fetch(`${baseUrl}/api/analytics/metrics`, {
+        const response = await fetchWithTimeout(`${baseUrl}/api/analytics/metrics`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const metricsData = await response.json();

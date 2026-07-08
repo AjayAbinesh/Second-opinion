@@ -62,6 +62,7 @@ ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:3000",
     "http://localhost:8000",
+    "https://second-opinion-6.onrender.com",
     "https://second-opinion-frontend.onrender.com",
     os.getenv("FRONTEND_URL", ""),
 ]

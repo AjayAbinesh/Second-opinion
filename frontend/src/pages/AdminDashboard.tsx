@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ShieldAlert, Users, Award, AlertTriangle, Activity, CheckCircle2 } from 'lucide-react';
+import { fetchWithTimeout } from '../utils/api';
 
 interface AdminDashboardProps {
   token: string;
@@ -15,7 +16,7 @@ export default function AdminDashboard({ token }: AdminDashboardProps) {
   useEffect(() => {
     const fetchAdminStats = async () => {
       try {
-        const response = await fetch(`${baseUrl}/api/analytics/admin/dashboard`, {
+        const response = await fetchWithTimeout(`${baseUrl}/api/analytics/admin/dashboard`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await response.json();

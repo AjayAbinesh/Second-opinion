@@ -190,9 +190,9 @@ def start_case(session_in: schemas.CaseSessionCreate, current_user: models.User 
     # Increment user streak if last active was yesterday (simple calculation)
     today = datetime.datetime.utcnow().date()
     yesterday = today - datetime.timedelta(days=1)
-    if current_user.last_active.date() == yesterday:
+    if current_user.last_active and current_user.last_active.date() == yesterday:
         current_user.streak += 1
-    elif current_user.last_active.date() != today:
+    elif current_user.last_active and current_user.last_active.date() != today:
         current_user.streak = 1
         
     current_user.last_active = datetime.datetime.utcnow()

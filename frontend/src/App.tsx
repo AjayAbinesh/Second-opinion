@@ -10,10 +10,11 @@ import Leaderboard from './pages/Leaderboard';
 import ProfileSettings from './pages/ProfileSettings';
 import AdminDashboard from './pages/AdminDashboard';
 import './App.css';
+import { fetchWithTimeout } from './utils/api';
 
 export default function App() {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<any>(JSON.parse(localStorage.getItem('user') || 'null'));
   const [currentTab, setCurrentTab] = useState<string>('landing');
   const [selectedSessionId, setSelectedSessionId] = useState<number | null>(null);
   const [theme, setTheme] = useState<string>(localStorage.getItem('theme') || 'dark');
@@ -26,8 +27,16 @@ export default function App() {
     setToken(newToken);
   };
 
+  const handleSetUser = (newUser: any) => {
+    if (newUser) {
+      localStorage.setItem('user', JSON.stringify(newUser));
+    }
+    setUser(newUser);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setToken(null);
     setUser(null);
     setSelectedSessionId(null);
@@ -54,26 +63,47 @@ export default function App() {
     }
   }, [theme]);
 
-  // Validate session on page load
+  // Validate session on page load - resilient to backend cold starts
   useEffect(() => {
     const validateToken = async () => {
       if (!token) {
         setLoadingUser(false);
         return;
       }
+      // If we have cached user data, show dashboard immediately
+      if (user) {
+        setCurrentTab('dashboard');
+        setLoadingUser(false);
+        // Validate in background, don't block UI
+        try {
+          const resp = await fetchWithTimeout(`${baseUrl}/api/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (resp.ok) {
+            const d = await resp.json();
+            handleSetUser(d);
+          } else if (resp.status === 401) {
+            handleLogout();
+          }
+        } catch {
+          // Backend unreachable (cold start) - keep session alive
+        }
+        return;
+      }
+      // No cached user - must validate
       try {
-        const response = await fetch(`${baseUrl}/api/auth/me`, {
+        const resp = await fetchWithTimeout(`${baseUrl}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        const data = await response.json();
-        if (response.ok) {
-          setUser(data);
+        const d = await resp.json();
+        if (resp.ok) {
+          handleSetUser(d);
           setCurrentTab('dashboard');
-        } else {
+        } else if (resp.status === 401) {
           handleLogout();
         }
       } catch {
-        handleLogout();
+        // Backend unreachable - keep token, show landing
       } finally {
         setLoadingUser(false);
       }
@@ -108,7 +138,7 @@ export default function App() {
         {currentTab === 'auth' && (
           <Auth
             setToken={handleSetToken}
-            setUser={setUser}
+            setUser={handleSetUser}
             setCurrentTab={setCurrentTab}
           />
         )}

@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: second-opinion-backend
+    name: second-opinion-3
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn backend.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
@@ -16,19 +16,16 @@ services:
       - key: GROQ_API_KEY
         sync: false
       - key: FRONTEND_URL
-        sync: false
+        value: "https://second-opinion-6.onrender.com"
 
   - type: web
-    name: second-opinion-frontend
+    name: second-opinion-6
     runtime: static
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_URL
-        fromService:
-          name: second-opinion-backend
-          type: web
-          envVarKey: RENDER_EXTERNAL_URL
+        value: "https://second-opinion-3.onrender.com"
 
 databases:
   - name: second-opinion-db

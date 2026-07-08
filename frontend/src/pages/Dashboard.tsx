@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Award, Zap, Activity, Clock, Play, CheckCircle, ArrowRight, Shield } from 'lucide-react';
+import { Award, Zap, Activity, Clock, Play, CheckCircle, ArrowRight, Shield, AlertCircle } from 'lucide-react';
+import { fetchWithTimeout } from '../utils/api';
 
 interface DashboardProps {
   token: string;
@@ -12,7 +13,7 @@ export default function Dashboard({ token, setCurrentTab, setSelectedSessionId }
   const [activeSessions, setActiveSessions] = useState<any[]>([]);
   const [templates, setTemplates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [, setError] = useState('');
+  const [error, setError] = useState('');
 
   const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -21,15 +22,15 @@ export default function Dashboard({ token, setCurrentTab, setSelectedSessionId }
       const headers = { Authorization: `Bearer ${token}` };
       
       // Fetch Dashboard stats
-      const statsRes = await fetch(`${baseUrl}/api/analytics/dashboard`, { headers });
+      const statsRes = await fetchWithTimeout(`${baseUrl}/api/analytics/dashboard`, { headers });
       const statsData = await statsRes.json();
       
       // Fetch Active sessions
-      const activeRes = await fetch(`${baseUrl}/api/cases/active-sessions`, { headers });
+      const activeRes = await fetchWithTimeout(`${baseUrl}/api/cases/active-sessions`, { headers });
       const activeData = await activeRes.json();
 
       // Fetch Case templates
-      const templatesRes = await fetch(`${baseUrl}/api/cases/templates`, { headers });
+      const templatesRes = await fetchWithTimeout(`${baseUrl}/api/cases/templates`, { headers });
       const templatesData = await templatesRes.json();
 
       if (statsRes.ok) setStats(statsData);
@@ -49,7 +50,7 @@ export default function Dashboard({ token, setCurrentTab, setSelectedSessionId }
   const handleStartCase = async (caseId: number) => {
     try {
       setLoading(true);
-      const response = await fetch(`${baseUrl}/api/cases/start`, {
+      const response = await fetchWithTimeout(`${baseUrl}/api/cases/start`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +64,7 @@ export default function Dashboard({ token, setCurrentTab, setSelectedSessionId }
       setSelectedSessionId(data.id);
       setCurrentTab('caseworkspace');
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || 'Failed to start case. Please try again.');
       setLoading(false);
     }
   };
@@ -75,14 +76,21 @@ export default function Dashboard({ token, setCurrentTab, setSelectedSessionId }
 
   if (loading) {
     return (
-      <div className="min-h-[50vh] flex items-center justify-center">
+      <div className="min-h-[50vh] flex items-center justify-center flex-col gap-4">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500"></div>
+        <p className="text-xs text-slate-500 animate-pulse">Connecting to server... (may take a moment on first load)</p>
       </div>
     );
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      {error && (
+        <div className="mb-6 p-4 rounded-xl bg-red-950/20 border border-red-900/30 text-red-400 text-sm flex items-center">
+          <AlertCircle className="h-4 w-4 mr-2 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
       
       {/* Welcome Banner */}
       <div className="mb-10 p-6 rounded-2xl bg-gradient-to-r from-slate-900 to-indigo-950 border border-indigo-500/20 text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
