@@ -523,3 +523,4 @@ The application stores:
 This project is developed for educational purposes and portfolio demonstration.
 
 It is **not intended for clinical diagnosis or patient care**.
+project deployment link:https://second-opinion-6.onrender.com/
